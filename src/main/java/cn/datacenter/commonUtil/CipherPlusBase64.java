@@ -1,5 +1,6 @@
 package cn.datacenter.commonUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
@@ -8,10 +9,13 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 /**
  * 数据加密工具，使用“DES/CBC/NoPadding”作为算法
  * 
- * @author meisheng
+ * @author masin
  * 
  */
 public class CipherPlusBase64 {
@@ -103,6 +107,37 @@ public class CipherPlusBase64 {
 
 		return out;
 	}
+	//base64 加密和解密
+	// -------------------------------------加密------------------------------------------  
+    public static String getBase64(String str) {  
+        byte[] b = null;  
+        String s = null;  
+        try {  
+            b = str.getBytes("utf-8");  
+        } catch (UnsupportedEncodingException e) {  
+            e.printStackTrace();  
+        }  
+        if (b != null) {  
+            s = new BASE64Encoder().encode(b);  
+        }  
+        return s;  
+    }  
+  
+    //--------------------------------------解密 ------------------------------------------
+    public static String getFromBase64(String s) {  
+        byte[] b = null;  
+        String result = null;  
+        if (s != null) {  
+            BASE64Decoder decoder = new BASE64Decoder();  
+            try {  
+                b = decoder.decodeBuffer(s);  
+                result = new String(b, "utf-8");  
+            } catch (Exception e) {  
+                e.printStackTrace();  
+            }  
+        }  
+        return result;  
+    }  
 
 	private static Cipher cipherEncrypt = null;
 	private static Cipher cipherDecrypt = null;

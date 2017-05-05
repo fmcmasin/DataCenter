@@ -1,18 +1,26 @@
 package cn.datacenter.commonUtil;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
+import cn.datacenter.pojo.Verify;
+import cn.datacenter.pojo.Msg.VerifyVO;
 import net.sf.json.JSONObject;
 
 /**
  * 集成公共类
- * @author meisheng
+ * @author masin
  * @since 2017/2/15
  */
 public class IntegrationUtils {
@@ -80,7 +88,7 @@ public class IntegrationUtils {
 			if(!isNumber(time)) {//如果token不为空，但不是数字则token有误
 				throw new Exception("无效的令牌，时间戳不正确" + token);
 			}
-			boolean timeOut = validTimeOut(time);
+			boolean timeOut = validTimeOut(Long.valueOf(time));
 			if(timeOut) {
 				throw new Exception("无效的令牌，令牌已超时" + token);
 			}
@@ -99,9 +107,12 @@ public class IntegrationUtils {
 	 * @param createTime
 	 * @return true表示已经超时，false表示没有超时
 	 */
-	public static boolean validTimeOut(String createTime) {
-		//假设等0天超时，当前的时间-生成token的时间
-		return (new Date()).getTime() - Long.parseLong(createTime) > 86400000;
+	public static boolean validTimeOut(long createTime) {
+		//读取token失效的时间转化为毫秒数 默认1天
+		
+		long timeout = Long.valueOf(PropertiesUtil.getStringByKey("timeout"));
+		
+		return (new Date()).getTime() - createTime > timeout*3600*1000;
 	}
 	
 	/**
@@ -165,5 +176,100 @@ public class IntegrationUtils {
 			e.printStackTrace();
 		}
 		return token;
+	}
+	
+	/**
+	 * 依据指定的生成规则来生成token验证码
+	 * @param type
+	 * @return
+	 */
+	public static  String getToken(VerifyVO  verify){
+		//拼装参数生成16为的md5 加密字符串
+		String token = null;
+		try {
+			String from = verify.getFroms();
+			String random= String.valueOf(new java.util.Random().nextInt(101));  //生成随机三位数
+			String project = verify.getProject();
+			String key   = verify.getKey();
+			token = MD5Util.string16MD5(from+random+project+key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return token;
+	}
+	
+	public static String validToken(Verify  verify) throws Exception{
+		if(verify==null){
+			throw new Exception("无效的令牌，请传入正确的令牌");
+		}
+		//令牌存在时，验证有效性
+		boolean timeOut = validTimeOut(verify.getCreatetime());
+		if(timeOut) {
+			throw new Exception("无效的令牌，令牌已超时" + verify.getToken());
+		}
+		return null;
+	}
+	/**
+	 * 解析GET  和 POST  請求的參數     application/x-www-form-urlencoded 表单格式
+	 * @param request
+	 * @return
+	 */
+	public static Map<String,String>  getDataFromRequest(HttpServletRequest request){
+		
+		Map<String, String> params_GET = new HashMap<String, String>();
+		Map<String, String[]> params_POST = new HashMap<String, String[]>();
+		Map<String,String>  hashmap = new HashMap<String, String>();
+		if("GET".equals(request.getMethod())){
+			String data = request.getParameter("json");
+			JSONObject  jasonObject = JSONObject.fromObject(data);
+			params_GET = (Map<String, String>)jasonObject;
+			for (String key : params_GET.keySet()) {  
+				String value = params_GET.get(key);  
+				hashmap.put(key, value);
+			}  
+		}else if("POST".equals(request.getMethod())){
+		//创建map用来存储请求发送的数据进行保存
+			params_POST = request.getParameterMap();  
+			for (String key : params_POST.keySet()) {  
+				String[] values = params_POST.get(key);  
+				for (int i = 0; i < values.length; i++) {  
+					String value = values[i];  
+					hashmap.put(key, value);
+				}  
+			}
+		}
+		return hashmap;
+		
+	}
+	/**
+	 * 解析GET  和 POST  請求的參數     application/json   json格式
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	public static Map<String,String>  getJsonDataFromRequest(HttpServletRequest request) throws Exception{
+		Map<String, String> params_GET = new HashMap<String, String>();
+		Map<String,String>  hashmap = new HashMap<String, String>();
+		if("GET".equals(request.getMethod())){
+			String data = request.getParameter("json");
+			JSONObject  jasonObject = JSONObject.fromObject(data);
+			params_GET = (Map<String, String>)jasonObject;
+			for (String key : params_GET.keySet()) {  
+				String value = params_GET.get(key);  
+				hashmap.put(key, value);
+			}  
+		}else if("POST".equals(request.getMethod())){
+		    BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));  
+	        String line = null;  
+	        StringBuilder sb = new StringBuilder();  
+		    while((line = br.readLine())!=null){  
+		       sb.append(line);  
+		    }  
+		    String reqBody = sb.toString();
+		    JSONObject  jsondata  = JSONObject.fromObject(reqBody);
+		    hashmap = (Map<String,String>)jsondata;
+		}
+		return  hashmap;
+		
 	}
 }

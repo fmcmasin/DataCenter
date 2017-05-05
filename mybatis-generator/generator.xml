@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
 	<!-- 数据库驱动包位置 -->  
-	<classPathEntry location="E:\repository\mysql\mysql-connector-java\5.1.39\mysql-connector-java-5.1.39.jar" />
+	<classPathEntry location="D:\developtools\repository\mysql\mysql-connector-java\5.1.39\mysql-connector-java-5.1.39.jar" />
 	<context id="DB2Tables" targetRuntime="MyBatis3">
 		<commentGenerator>
 			<property name="suppressAllComments" value="true" />
@@ -14,20 +14,23 @@
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
 		 <!-- 生成模型的包名和位置 -->  
-		<javaModelGenerator targetPackage="mybatis-generator.datacenter.pojo" targetProject="G:\DataCenter">
+		<javaModelGenerator targetPackage="mybatis-generator.datacenter.pojo" targetProject="E:\Devproject\DataCenter">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 		 <!-- 生成的映射文件包名和位置 -->  
-		<sqlMapGenerator targetPackage="mybatis-generator.datacenter.mapping" targetProject="G:\DataCenter">
+		<sqlMapGenerator targetPackage="mybatis-generator.datacenter.mapping" targetProject="E:\Devproject\DataCenter">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		 <!-- 生成DAO的包名和位置 -->  
-		<javaClientGenerator type="XMLMAPPER" targetPackage="mybatis-generator.datacenter.dao" targetProject="G:\DataCenter">
+		<javaClientGenerator type="XMLMAPPER" targetPackage="mybatis-generator.datacenter.dao" targetProject="E:\Devproject\DataCenter">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		  <!-- 要生成那些表(更改tableName和domainObjectName就可以) -->
-		<table tableName="test" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<table tableName="VERIFY" domainObjectName="Verify" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<!-- <table tableName="ORDERS" domainObjectName="Orders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<table tableName="WO_OPTIONLIST" domainObjectName="WoOptionList" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<table tableName="WO_ORDERS" domainObjectName="WoOrders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" /> -->
 		
 	</context>
 </generatorConfiguration>

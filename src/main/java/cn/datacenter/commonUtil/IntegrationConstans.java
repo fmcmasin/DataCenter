@@ -2,7 +2,7 @@ package cn.datacenter.commonUtil;
 
 /**
  * 集成接口的常量类
- * @author meisheng
+ * @author masin
  *
  */
 public interface IntegrationConstans {
@@ -27,13 +27,14 @@ public interface IntegrationConstans {
 	 */
 	public static final String USER_NOT_EXISTS_MESSAGE = "无效的用户";
 	
-//	/**
-//	 * 高频率读数：是
-//	 */
-//	public static final String HEIGHT_FREQ_YES = "YES";
-//
-//	/**
-//	 * 高频率读数：否
-//	 */
-//	public static final String HEIGHT_FREQ_NO = "NO";
+	/*
+	 * 查询报事报修工单
+	 */
+	public static final String SR_AFFAIR ="AFFAIR";  
+	
+	/*
+	 * 查看投诉建议工单
+	 */
+	public static final String SR_SUGGEST="SUGGEST";  
+	
 }
